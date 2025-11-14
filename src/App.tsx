@@ -1,220 +1,34 @@
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, } from 'lucide-react';
 import outputs from '../amplify_outputs.json';
+import LotModal from "./components/LotModel.tsx";
+import type {Schema } from '../amplify/data/resource'
+import type {TickerLotEntries, LotSubmitData} from '../src/lib/types/TickerLotTypes'
+
 
 Amplify.configure(outputs);
-const client = generateClient();
+const client = generateClient<Schema>();
 
-// Types
-interface TickerLot {
-  id: string;
-  ticker: string;
-  quantity: number;
-  costPerShare: number;
-  purchaseDate: string;
-  totalCost: number;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface LotFormData {
-  ticker: string;
-  quantity: string;
-  costPerShare: string;
-  purchaseDate: string;
-  notes: string;
-}
-
-interface LotModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: any) => void;
-  lot: TickerLot | null;
-  mode: 'create' | 'edit';
-}
-
-// Modal Component
-const LotModal: React.FC<LotModalProps> = ({ isOpen, onClose, onSave, lot, mode }) => {
-  const [formData, setFormData] = useState<LotFormData>({
-    ticker: '',
-    quantity: '',
-    costPerShare: '',
-    purchaseDate: new Date().toISOString().split('T')[0],
-    notes: '',
-  });
-
-  useEffect(() => {
-    if (lot && mode === 'edit') {
-      setFormData({
-        ticker: lot.ticker,
-        quantity: lot.quantity.toString(),
-        costPerShare: lot.costPerShare.toString(),
-        purchaseDate: lot.purchaseDate,
-        notes: lot.notes || '',
-      });
-    } else if (mode === 'create') {
-      setFormData({
-        ticker: '',
-        quantity: '',
-        costPerShare: '',
-        purchaseDate: new Date().toISOString().split('T')[0],
-        notes: '',
-      });
-    }
-  }, [lot, mode, isOpen]);
-
-  const handleSubmit = () => {
-    const quantity = parseFloat(formData.quantity);
-    const costPerShare = parseFloat(formData.costPerShare);
-    const totalCost = quantity * costPerShare;
-
-    onSave({
-      ...formData,
-      quantity,
-      costPerShare,
-      totalCost,
-    });
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {mode === 'edit' ? 'Edit Lot' : 'Add New Lot'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
-          >
-            <X size={24} />
-          </button>
-        </div>
-
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Ticker Symbol
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.ticker}
-              onChange={(e) => setFormData({ ...formData, ticker: e.target.value.toUpperCase() })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="AAPL"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quantity
-            </label>
-            <input
-              type="number"
-              step="0.0001"
-              required
-              value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="100"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Cost Per Share ($)
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              required
-              value={formData.costPerShare}
-              onChange={(e) => setFormData({ ...formData, costPerShare: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="150.00"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Purchase Date
-            </label>
-            <input
-              type="date"
-              required
-              value={formData.purchaseDate}
-              onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes (Optional)
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
-              placeholder="Additional notes..."
-            />
-          </div>
-
-          {formData.quantity && formData.costPerShare && (
-            <div className="bg-blue-50 p-4 rounded-md">
-              <p className="text-sm font-medium text-gray-700">
-                Total Cost: ${(parseFloat(formData.quantity) * parseFloat(formData.costPerShare)).toFixed(2)}
-              </p>
-            </div>
-          )}
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-            >
-              {mode === 'edit' ? 'Update' : 'Add'} Lot
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Main App Component
 function TickerLotApp() {
-  const [lots, setLots] = useState<TickerLot[]>([]);
+  const [lots, setLots] = useState<TickerLotEntries[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
-  const [selectedLot, setSelectedLot] = useState<TickerLot | null>(null);
+  const [selectedLot, setSelectedLot] = useState<TickerLotEntries | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLots();
 
-    // Subscribe to real-time updates
     const subscription = client.models.TickerLot.observeQuery().subscribe({
       next: ({ items }) => {
-        setLots(items as TickerLot[]);
+        setLots(items as TickerLotEntries[]);
       },
     });
 
@@ -225,7 +39,7 @@ function TickerLotApp() {
     try {
       setLoading(true);
       const { data } = await client.models.TickerLot.list();
-      setLots(data as TickerLot[]);
+      setLots(data as TickerLotEntries[]);
     } catch (error) {
       console.error('Error fetching lots:', error);
     } finally {
@@ -233,16 +47,19 @@ function TickerLotApp() {
     }
   };
 
-  const handleCreateLot = async (formData: any) => {
+  const handleCreateLot = async (formData: LotSubmitData) => {
     try {
+
       await client.models.TickerLot.create({
         ticker: formData.ticker,
         quantity: formData.quantity,
         costPerShare: formData.costPerShare,
         purchaseDate: formData.purchaseDate,
         totalCost: formData.totalCost,
-        notes: formData.notes || undefined,
+        notes: formData.notes || null,
       });
+
+
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error creating lot:', error);
@@ -250,7 +67,7 @@ function TickerLotApp() {
     }
   };
 
-  const handleUpdateLot = async (formData: any) => {
+  const handleUpdateLot = async (formData: LotSubmitData) => {
     if (!selectedLot) return;
 
     try {
@@ -272,7 +89,7 @@ function TickerLotApp() {
   };
 
   const handleDeleteLot = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this lot?')) return;
+    if (!window.confirm('Are you sure you want to delete this lot?')) return;
 
     try {
       await client.models.TickerLot.delete({ id });
@@ -288,7 +105,7 @@ function TickerLotApp() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (lot: TickerLot) => {
+  const openEditModal = (lot: TickerLotEntries) => {
     setModalMode('edit');
     setSelectedLot(lot);
     setIsModalOpen(true);
@@ -309,7 +126,7 @@ function TickerLotApp() {
     }
     acc[lot.ticker].push(lot);
     return acc;
-  }, {} as Record<string, TickerLot[]>);
+  }, {} as Record<string, TickerLotEntries[]>);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -421,6 +238,7 @@ function TickerLotApp() {
     </div>
   );
 }
+
 
 // Export with Authenticator wrapper
 export default function App() {
