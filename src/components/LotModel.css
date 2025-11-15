@@ -1,0 +1,22 @@
+.button-class-popup {
+    button {
+        border-radius: 8px;
+        border: 1px solid transparent;
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        font-weight: 500;
+        font-family: inherit;
+        background-color: #646cff;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease ;
+    }
+}
+.button-class-popup:hover {
+    background-color: slategrey;
+    transform: scale(1.05); /* Makes the button slightly larger on hover */
+}
+
+.button-class-popup:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}

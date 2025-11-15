@@ -135,8 +135,9 @@ function TickerLotApp() {
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl font-bold text-gray-800">Ticker Lot Manager</h1>
             <button
+              style={{ backgroundColor: 'rgba(82, 227, 115, 0.3)' }}
               onClick={openCreateModal}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-gray-700 rounded-md hover:bg-blue-700 transition"
             >
               <Plus size={20} />
               Add Lot
@@ -204,6 +205,7 @@ function TickerLotApp() {
 
                         <div className="flex gap-2 ml-4">
                           <button
+                            style={{ backgroundColor: 'rgba(82, 227, 115, 0.3)' }}
                             onClick={() => openEditModal(lot)}
                             className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
                             title="Edit lot"
@@ -211,6 +213,7 @@ function TickerLotApp() {
                             <Edit2 size={18} />
                           </button>
                           <button
+                            style={{ backgroundColor: 'rgba(82, 227, 115, 0.3)' }}
                             onClick={() => handleDeleteLot(lot.id)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded transition"
                             title="Delete lot"
@@ -249,6 +252,7 @@ export default function App() {
           <div className="bg-gray-800 text-white px-6 py-3 flex items-center justify-between">
             <p className="text-sm">Signed in as: {user?.signInDetails?.loginId}</p>
             <button
+              style={{ backgroundColor: 'rgba(222, 221, 234, 0.3)' }}
               onClick={signOut}
               className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm"
             >
