@@ -7,7 +7,7 @@ import type {LotModalProps, LotFormData} from '../lib/types/TickerLotTypes'
 //import { Plus, Edit2, Trash2, X } from 'lucide-react';
 import { X } from 'lucide-react';
 //import outputs from '../amplify_outputs.json';
-//import "./LotModel.css"
+import "./LotModel.css"
 
 // Modal Component
 
@@ -156,7 +156,7 @@ const LotModal: React.FC<LotModalProps> = ({ isOpen, onClose, onSave, lot, mode 
           <div className="flex gap-3 pt-4">
             <button
               type="button"
-              style={{ backgroundColor: 'rgba(82, 227, 115, 0.3)' }}
+              //style={{ backgroundColor: 'rgba(82, 227, 115, 0.3)' }}
               onClick={onClose}
               //className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
               className='button-class-popup'
@@ -165,7 +165,7 @@ const LotModal: React.FC<LotModalProps> = ({ isOpen, onClose, onSave, lot, mode 
             </button>
             <button
               type="button"
-              style={{ backgroundColor: 'rgba(82, 227, 115, .3)' }}
+              //style={{ backgroundColor: 'rgba(82, 227, 115, .3)' }}
               onClick={handleSubmit}
               //className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
               className='button-class-popup'
