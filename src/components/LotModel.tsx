@@ -55,7 +55,8 @@ const LotModal: React.FC<LotModalProps> = ({ isOpen, onClose, onSave, lot, mode 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(17, 24, 39, 0.3)' }}>
+      {/*<div className="fixed inset-0 bg-gray-50 bg-opacity-90 flex items-center justify-center z-50 p-4">*/}
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-2xl font-bold text-gray-800">
